@@ -28,7 +28,7 @@
     const tableData = ref(null)
 
     const USERNAME = "anapros"
-    const PASSWORD = "BM1ykO6y"
+    const PASSWORD = "opensky123"
 
     const fetchData = async () => {
     try {
@@ -52,3 +52,12 @@
   }
 
     </script>
+
+<style scoped>
+.example-pagination-block + .example-pagination-block {
+  margin-top: 10px;
+}
+.example-pagination-block .example-demonstration {
+  margin-bottom: 16px;
+}
+</style>
