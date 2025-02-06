@@ -1,59 +1,37 @@
 <template>
-  <div class="header">STATE TABLE</div>
+  <div class="header">DEPARTURE FLIGHTS</div>
   <div class="header-button-group">
     <div class="button-group">
       <div class="search-group">
         <div class="search-item">
-          <label for="icao24">ICAO24</label>
+          <label for="airport">Airport ICAO</label>
           <el-input
-            id="icao24"
-            v-model="searchIcao24"
+            id="airport"
+            v-model="searchAirport"
             size="small"
-            placeholder="Type to search"
-            class="search-input"
-          />
-        </div>
-        <div class="search-item">
-          <label for="callsign">Callsign</label>
-          <el-input
-            id="callsign"
-            v-model="searchCallsign"
-            size="small"
-            placeholder="Type to search"
-            class="search-input"
-          />
-        </div>
-        <div class="search-item">
-          <label for="origin_country">Origin Country</label>
-          <el-input
-            id="origin_country"
-            v-model="searchCountry"
-            size="small"
-            placeholder="Type to search"
+            placeholder="Enter ICAO (e.g., LTFM)"
             class="search-input"
           />
         </div>
       </div>
       <el-button class="fetch-button" type="primary" @click="fetchData">
-        REFRESH DATA
+        GET DATA
       </el-button>
     </div>
   </div>
+
   <el-table
     class="table-group"
     v-loading="loading"
-    row-key="icao24"
     :data="paginatedData"
     stripe
-    style="width: 100%"
   >
     <el-table-column prop="icao24" label="ICAO24" />
     <el-table-column prop="callsign" label="Callsign" />
-    <el-table-column prop="origin_country" label="Origin Country" />
-    <el-table-column prop="velocity" label="Velocity" />
-    <el-table-column prop="geo_altitude" label="Geo Altitude" />
+    <el-table-column prop="location" label="Departure Location" />
+    <el-table-column prop="firstSeen" label="First Seen" />
+    <el-table-column prop="lastSeen" label="Last Seen" />
   </el-table>
-
   <div class="example-pagination-block">
     <el-pagination
       v-model:current-page="currentPage"
@@ -69,76 +47,58 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed } from "vue";
 import axios from "axios";
+import dayjs from "dayjs";
 
 const tableData = ref([]);
-const currentPage = ref(1);
-const loading = ref();
-const pageSize = ref(25);
+const searchAirport = ref("");
+const loading = ref(false);
 
-const searchIcao24 = ref("");
-const searchCallsign = ref("");
-const searchCountry = ref("");
+const currentPage = ref(1);
+const pageSize = ref(25);
 
 const USERNAME = import.meta.env.VITE_USERNAME;
 const PASSWORD = import.meta.env.VITE_PASSWORD;
 
 const fetchData = async () => {
+  if (!searchAirport.value.trim()) return;
+
   loading.value = true;
+
+  tableData.value = [];
   try {
+    const now = Math.floor(Date.now() / 1000);
+    const oneHourAgo = now - 3600;
+
     const response = await axios.get(
-      "https://opensky-network.org/api/states/all",
+      "https://opensky-network.org/api/flights/departure",
       {
-        auth: {
-          username: USERNAME,
-          password: PASSWORD,
+        params: {
+          airport: searchAirport.value.trim(),
+          begin: oneHourAgo,
+          end: now,
         },
+        auth: { username: USERNAME, password: PASSWORD },
       }
     );
-    if (response.data && response.data.states) {
-      tableData.value = response.data.states.map((state) => ({
-        icao24: state[0] || "N/A",
-        callsign: state[1] || "N/A",
-        origin_country: state[2] || "N/A",
-        velocity: state[3] || 0,
-        geo_altitude: state[4] || 0,
-      }));
-    }
+
+    tableData.value = response.data.map((flight) => ({
+      icao24: flight.icao24 || "N/A",
+      callsign: flight.callsign || "N/A",
+      location: flight.estDepartureAirport || "N/A",
+      firstSeen: dayjs.unix(flight.firstSeen).format("HH:mm:ss"),
+      lastSeen: dayjs.unix(flight.lastSeen).format("HH:mm:ss"),
+    }));
   } catch (error) {
-    console.error("Error fetching flight data:", error);
+    console.error("Error fetching departure flights:", error);
   } finally {
     loading.value = false;
   }
 };
-onMounted(() => {
-  fetchData();
-  setInterval(fetchData, 60000);
-});
-
-const filteredData = computed(() => {
-  return tableData.value.filter((flight) => {
-    const matchesIcao24 = searchIcao24.value
-      ? flight.icao24.toLowerCase().includes(searchIcao24.value.toLowerCase())
-      : true;
-    const matchesCallsign = searchCallsign.value
-      ? flight.callsign
-          .toLowerCase()
-          .includes(searchCallsign.value.toLowerCase())
-      : true;
-    const matchesCountry = searchCountry.value
-      ? flight.origin_country
-          .toLowerCase()
-          .includes(searchCountry.value.toLowerCase())
-      : true;
-
-    return matchesIcao24 && matchesCallsign && matchesCountry;
-  });
-});
-
 const paginatedData = computed(() => {
   const start = (currentPage.value - 1) * pageSize.value;
-  return filteredData.value.slice(start, start + pageSize.value);
+  return tableData.value.slice(start, start + pageSize.value);
 });
 
 const handleSizeChange = (newSize) => {
@@ -193,7 +153,7 @@ const handleCurrentChange = (newPage) => {
 }
 
 .search-input {
-  width: 100%;
+  width: 150px;
   height: 35px;
 }
 .header-button-group {
