@@ -1,5 +1,5 @@
 <template>
-  <div class="header">ARRIVAL FLIGHTS</div>
+  <div class="header">ARRIVAL TABLE</div>
   <div class="header-button-group">
     <div class="button-group">
       <div class="search-group">

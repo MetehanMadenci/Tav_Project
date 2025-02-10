@@ -1,32 +1,18 @@
 <template>
-  <div class="login-container">
-    <h1>Login Page</h1>
-  </div>
-  <div class="login">
-    <el-form
-      :model="ruleForm"
-      :rules="rules"
-      ref="ruleFormsss"
-      label-width="60px"
-    >
-      <el-form-item label="Username" prop="username">
-        <el-input v-model="ruleForm.username" style="width: 300px"></el-input>
-      </el-form-item>
-      <el-form-item label="Password" prop="password">
-        <el-input v-model="ruleForm.password" style="width: 300px"></el-input>
-      </el-form-item>
-      <div class="btn-box">
-        <el-button
-          type="primary"
-          size="medium"
-          @click="submitForm"
-          style="width: 200px"
-          >Giriş</el-button
-        >
-      </div>
-    </el-form>
+  <div>
+    <div style="margin-top: 20px; display: flex; gap: 10px">
+      <el-button type="primary" @click="navigateTo('arrivals')"
+        >Arrivals</el-button
+      >
+      <el-button type="primary" @click="navigateTo('departures')"
+        >Departures</el-button
+      >
+      <el-button type="primary" @click="navigateTo('map')">Map</el-button>
+      <el-button type="primary" @click="navigateTo('states')">States</el-button>
+    </div>
   </div>
 </template>
+
 <script setup>
 import { useRouter } from "vue-router";
 
@@ -39,6 +25,9 @@ const navigateTo = (page) => {
       break;
     case "departures":
       router.push("/departures");
+      break;
+    case "map":
+      router.push("/map");
       break;
     case "states":
       router.push("/states");

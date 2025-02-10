@@ -1,5 +1,5 @@
 <template>
-  <div class="header">DEPARTURE FLIGHTS</div>
+  <div class="header">DEPARTURE TABLE</div>
   <div class="header-button-group">
     <div class="button-group">
       <div class="search-group">
@@ -69,14 +69,14 @@ const fetchData = async () => {
   tableData.value = [];
   try {
     const now = Math.floor(Date.now() / 1000);
-    const oneHourAgo = now - 3600;
+    const oneDayAgo = now - 86400;
 
     const response = await axios.get(
       "https://opensky-network.org/api/flights/departure",
       {
         params: {
           airport: searchAirport.value.trim(),
-          begin: oneHourAgo,
+          begin: oneDayAgo,
           end: now,
         },
         auth: { username: USERNAME, password: PASSWORD },

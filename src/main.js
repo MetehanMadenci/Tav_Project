@@ -5,6 +5,7 @@ import "element-plus/dist/index.css";
 import dayjs from "dayjs";
 import router from "./router/router.js";
 import axios from "axios";
+import mapboxgl from "mapbox-gl";
 
 const app = createApp(App);
 app.use(ElementPlus);
