@@ -47,12 +47,12 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import axios from "axios";
 import dayjs from "dayjs";
 
 const tableData = ref([]);
-const searchAirport = ref("");
+const searchAirport = ref("LTFM");
 const loading = ref(false);
 
 const currentPage = ref(1);
@@ -96,6 +96,7 @@ const fetchData = async () => {
     loading.value = false;
   }
 };
+onMounted(fetchData);
 const paginatedData = computed(() => {
   const start = (currentPage.value - 1) * pageSize.value;
   return tableData.value.slice(start, start + pageSize.value);
