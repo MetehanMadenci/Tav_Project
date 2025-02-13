@@ -1,76 +1,84 @@
 <template>
-  <div class="header">STATE TABLE</div>
-  <div class="header-button-group">
-    <div class="button-group">
-      <div class="search-group">
-        <div class="search-item">
-          <label for="icao24">ICAO24</label>
-          <el-input
-            id="icao24"
-            v-model="searchIcao24"
-            size="small"
-            placeholder="Type to search"
-            class="search-input"
-          />
-        </div>
-        <div class="search-item">
-          <label for="callsign">Callsign</label>
-          <el-input
-            id="callsign"
-            v-model="searchCallsign"
-            size="small"
-            placeholder="Type to search"
-            class="search-input"
-          />
-        </div>
-        <div class="search-item">
-          <label for="origin_country">Origin Country</label>
-          <el-input
-            id="origin_country"
-            v-model="searchCountry"
-            size="small"
-            placeholder="Type to search"
-            class="search-input"
-          />
+  <PageHeader />
+  <div class="container">
+    <div class="content">
+      <div class="header">STATE TABLE</div>
+      <div class="header-button-group">
+        <div class="button-group">
+          <div class="search-group">
+            <div class="search-item">
+              <label for="icao24">ICAO24</label>
+              <el-input
+                id="icao24"
+                v-model="searchIcao24"
+                size="small"
+                placeholder="Type to search"
+                class="search-input"
+              />
+            </div>
+            <div class="search-item">
+              <label for="callsign">Callsign</label>
+              <el-input
+                id="callsign"
+                v-model="searchCallsign"
+                size="small"
+                placeholder="Type to search"
+                class="search-input"
+              />
+            </div>
+            <div class="search-item">
+              <label for="origin_country">Origin Country</label>
+              <el-input
+                id="origin_country"
+                v-model="searchCountry"
+                size="small"
+                placeholder="Type to search"
+                class="search-input"
+              />
+            </div>
+          </div>
+          <el-button class="fetch-button" type="primary" @click="fetchData">
+            REFRESH DATA
+          </el-button>
         </div>
       </div>
-      <el-button class="fetch-button" type="primary" @click="fetchData">
-        REFRESH DATA
-      </el-button>
+      <el-table
+        class="table-group"
+        v-loading="loading"
+        row-key="icao24"
+        :data="paginatedData"
+        stripe
+        style="width: 100%"
+      >
+        <el-table-column prop="icao24" label="ICAO24" />
+        <el-table-column prop="callsign" label="Callsign" />
+        <el-table-column prop="origin_country" label="Origin Country" />
+        <el-table-column prop="velocity" label="Velocity" />
+        <el-table-column prop="geo_altitude" label="Geo Altitude" />
+      </el-table>
+
+      <div class="example-pagination-block">
+        <el-pagination
+          v-model:current-page="currentPage"
+          v-model:page-size="pageSize"
+          :page-sizes="[25, 50, 100, 200]"
+          :background="true"
+          layout="sizes, prev, pager, next"
+          :total="tableData.length"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+        />
+      </div>
     </div>
   </div>
-  <el-table
-    class="table-group"
-    v-loading="loading"
-    row-key="icao24"
-    :data="paginatedData"
-    stripe
-    style="width: 100%"
-  >
-    <el-table-column prop="icao24" label="ICAO24" />
-    <el-table-column prop="callsign" label="Callsign" />
-    <el-table-column prop="origin_country" label="Origin Country" />
-    <el-table-column prop="velocity" label="Velocity" />
-    <el-table-column prop="geo_altitude" label="Geo Altitude" />
-  </el-table>
-
-  <div class="example-pagination-block">
-    <el-pagination
-      v-model:current-page="currentPage"
-      v-model:page-size="pageSize"
-      :page-sizes="[25, 50, 100, 200]"
-      :background="true"
-      layout="sizes, prev, pager, next"
-      :total="tableData.length"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-    />
-  </div>
+  <PageFooter />
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
 import axios from "axios";
+import PageHeader from "./pageHeader.vue";
+import PageFooter from "./pageFooter.vue";
 
 const tableData = ref([]);
 const currentPage = ref(1);
@@ -214,6 +222,7 @@ const handleCurrentChange = (newPage) => {
   border-radius: 0.1cm;
 }
 .header {
+  margin-top: 80px;
   display: flex;
   justify-content: center;
   font-size: 100px;
@@ -224,5 +233,14 @@ const handleCurrentChange = (newPage) => {
 }
 .example-showcase .el-loading-mask {
   z-index: 9;
+}
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.content {
+  flex-grow: 1;
 }
 </style>

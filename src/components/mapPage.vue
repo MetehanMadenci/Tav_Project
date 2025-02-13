@@ -1,5 +1,9 @@
 <template>
-  <div id="map-container"></div>
+  <PageHeader />
+  <div class="container">
+    <div class="content"><div id="map-container"></div></div>
+  </div>
+  <PageFooter />
 </template>
 
 <script setup>
@@ -7,6 +11,8 @@ import { onMounted, ref } from "vue";
 import mapboxgl from "mapbox-gl";
 import axios from "axios";
 import "mapbox-gl/dist/mapbox-gl.css";
+import PageHeader from "./pageHeader.vue";
+import PageFooter from "./pageFooter.vue";
 
 const USERNAME = import.meta.env.VITE_USERNAME;
 const PASSWORD = import.meta.env.VITE_PASSWORD;
@@ -28,10 +34,15 @@ const fetchData = async () => {
     );
 
     if (response.data && response.data.states) {
-      tableData.value = response.data.states.slice(0, 100).map((state) => ({
+      tableData.value = response.data.states.map((state) => ({
+        callsign: state[1] || "Unknown",
+        origin_country: state[2] || "Unknown",
         longitude: state[5] || null,
         latitude: state[6] || null,
+        velocity: state[9] ? (state[9] * 3.6).toFixed(1) : "Unknown",
         true_track: state[10] || 0,
+        altitude: state[13] || "N/A",
+        icao24: state[0] || "Unknown",
       }));
 
       updateMarkers();
@@ -47,13 +58,15 @@ const updateMarkers = () => {
   markers.value.forEach((marker) => marker.remove());
   markers.value = [];
 
-  const visibleFlights = tableData.value.filter(
-    (flight) =>
-      flight.longitude >= bounds.getWest() &&
-      flight.longitude <= bounds.getEast() &&
-      flight.latitude >= bounds.getSouth() &&
-      flight.latitude <= bounds.getNorth()
-  );
+  const visibleFlights = tableData.value
+    .filter(
+      (flight) =>
+        flight.longitude >= bounds.getWest() &&
+        flight.longitude <= bounds.getEast() &&
+        flight.latitude >= bounds.getSouth() &&
+        flight.latitude <= bounds.getNorth()
+    )
+    .slice(0, 100);
 
   visibleFlights.forEach((flight) => {
     const el = document.createElement("div");
@@ -65,8 +78,22 @@ const updateMarkers = () => {
     img.style.transform = `rotate(${flight.true_track}deg)`;
 
     el.appendChild(img);
+
+    const description = `
+      <div style="font-size:14px; font-family:Arial, sans-serif; padding:5px; text-align:left;">
+        <strong>Callsign:</strong> ${flight.callsign} <br>
+        <strong>Country:</strong> ${flight.origin_country} <br>
+        <strong>Speed:</strong> ${flight.velocity} km/h <br>
+        <strong>Altitude:</strong> ${flight.altitude} m <br>
+        <strong>Track:</strong> ${flight.true_track}° <br>
+      </div>
+    `;
+
+    const popup = new mapboxgl.Popup({ offset: 15 }).setHTML(description);
+
     const marker = new mapboxgl.Marker(el)
       .setLngLat([flight.longitude, flight.latitude])
+      .setPopup(popup)
       .addTo(map.value);
 
     markers.value.push(marker);
@@ -95,17 +122,31 @@ onMounted(() => {
   map.value.addControl(new mapboxgl.ScaleControl({ unit: "metric" }));
 
   fetchData();
-  setInterval(fetchData, 6000);
+  setInterval(fetchData, 3000);
   map.value.on("moveend", updateMarkers);
 });
 </script>
 
 <style>
 #map-container {
-  width: 100%;
+  margin-top: 80px;
+  width: 90%;
+  padding: 5%;
   height: 1000px;
 }
 .marker img {
   transition: transform 0.3s ease-out;
+}
+.mapboxgl-popup {
+  max-width: 250px;
+}
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.content {
+  flex-grow: 1;
 }
 </style>

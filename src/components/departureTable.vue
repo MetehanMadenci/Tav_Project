@@ -1,55 +1,63 @@
 <template>
-  <div class="header">DEPARTURE TABLE</div>
-  <div class="header-button-group">
-    <div class="button-group">
-      <div class="search-group">
-        <div class="search-item">
-          <label for="airport">Airport ICAO</label>
-          <el-input
-            id="airport"
-            v-model="searchAirport"
-            size="small"
-            placeholder="Enter ICAO (e.g., LTFM)"
-            class="search-input"
-          />
+  <PageHeader />
+  <div class="container">
+    <div class="content">
+      <div class="header">DEPARTURE TABLE</div>
+      <div class="header-button-group">
+        <div class="button-group">
+          <div class="search-group">
+            <div class="search-item">
+              <label for="airport">Airport ICAO</label>
+              <el-input
+                id="airport"
+                v-model="searchAirport"
+                size="small"
+                placeholder="Enter ICAO (e.g., LTFM)"
+                class="search-input"
+              />
+            </div>
+          </div>
+          <el-button class="fetch-button" type="primary" @click="fetchData">
+            GET DATA
+          </el-button>
         </div>
       </div>
-      <el-button class="fetch-button" type="primary" @click="fetchData">
-        GET DATA
-      </el-button>
+
+      <el-table
+        class="table-group"
+        v-loading="loading"
+        :data="paginatedData"
+        stripe
+      >
+        <el-table-column prop="icao24" label="ICAO24" />
+        <el-table-column prop="callsign" label="Callsign" />
+        <el-table-column prop="location" label="Departure Location" />
+        <el-table-column prop="firstSeen" label="First Seen" />
+        <el-table-column prop="lastSeen" label="Last Seen" />
+      </el-table>
+      <div class="example-pagination-block">
+        <el-pagination
+          v-model:current-page="currentPage"
+          v-model:page-size="pageSize"
+          :page-sizes="[25, 50, 100, 200]"
+          :background="true"
+          layout="sizes, prev, pager, next"
+          :total="tableData.length"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+        />
+      </div>
     </div>
   </div>
-
-  <el-table
-    class="table-group"
-    v-loading="loading"
-    :data="paginatedData"
-    stripe
-  >
-    <el-table-column prop="icao24" label="ICAO24" />
-    <el-table-column prop="callsign" label="Callsign" />
-    <el-table-column prop="location" label="Departure Location" />
-    <el-table-column prop="firstSeen" label="First Seen" />
-    <el-table-column prop="lastSeen" label="Last Seen" />
-  </el-table>
-  <div class="example-pagination-block">
-    <el-pagination
-      v-model:current-page="currentPage"
-      v-model:page-size="pageSize"
-      :page-sizes="[25, 50, 100, 200]"
-      :background="true"
-      layout="sizes, prev, pager, next"
-      :total="tableData.length"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-    />
-  </div>
+  <PageFooter />
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
 import axios from "axios";
 import dayjs from "dayjs";
+import PageHeader from "./pageHeader.vue";
+import PageFooter from "./pageFooter.vue";
 
 const tableData = ref([]);
 const searchAirport = ref("LTFM");
@@ -175,6 +183,7 @@ const handleCurrentChange = (newPage) => {
   border-radius: 0.1cm;
 }
 .header {
+  margin-top: 80px;
   display: flex;
   justify-content: center;
   font-size: 100px;
@@ -185,5 +194,13 @@ const handleCurrentChange = (newPage) => {
 }
 .example-showcase .el-loading-mask {
   z-index: 9;
+}
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+.content {
+  flex-grow: 1;
 }
 </style>

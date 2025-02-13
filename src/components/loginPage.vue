@@ -1,39 +1,23 @@
 <template>
-  <div>
-    <div style="margin-top: 20px; display: flex; gap: 10px">
-      <el-button type="primary" @click="navigateTo('arrivals')"
-        >Arrivals</el-button
-      >
-      <el-button type="primary" @click="navigateTo('departures')"
-        >Departures</el-button
-      >
-      <el-button type="primary" @click="navigateTo('map')">Map</el-button>
-      <el-button type="primary" @click="navigateTo('states')">States</el-button>
-    </div>
+  <PageHeader />
+  <div class="container">
+    <div class="content">Login Page</div>
   </div>
+  <PageFooter />
 </template>
 
 <script setup>
-import { useRouter } from "vue-router";
-
-const router = useRouter();
-
-const navigateTo = (page) => {
-  switch (page) {
-    case "arrivals":
-      router.push("/arrivals");
-      break;
-    case "departures":
-      router.push("/departures");
-      break;
-    case "map":
-      router.push("/map");
-      break;
-    case "states":
-      router.push("/states");
-      break;
-    default:
-      break;
-  }
-};
+import PageHeader from "./pageHeader.vue";
+import PageFooter from "./pageFooter.vue";
 </script>
+<style>
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.content {
+  flex-grow: 1;
+}
+</style>
