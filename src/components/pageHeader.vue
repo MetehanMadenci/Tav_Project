@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <el-page-header @back="goBack" :icon="ArrowLeft">
     <template #breadcrumb>
       <el-breadcrumb separator="/">
@@ -132,7 +132,7 @@ const goBack = () => {
 }
 
 .highlight-bg {
-  background-color: #d1e7fd !important;
+  background-color: #d1e7fd;
   font-weight: bold;
   border-radius: 5px;
 }
@@ -149,5 +149,118 @@ const goBack = () => {
   top: 0;
   left: 0;
   width: 100%;
+}
+</style>
+ -->
+<template>
+  <div class="common-layout">
+    <el-container>
+      <el-header class="fixed-header">
+        <div class="logo">
+          <img src="/icons8-plane.png" alt="Logo" class="logo-img" />
+          <span class="logo-text">SkyTrack</span>
+        </div>
+
+        <div class="nav-container">
+          <el-menu
+            mode="horizontal"
+            router
+            class="nav-menu"
+            :default-active="activeIndex"
+          >
+            <el-menu-item index="/">Ana Sayfa</el-menu-item>
+            <el-menu-item index="/departures">Departure Table</el-menu-item>
+            <el-menu-item index="/arrivals">Arrival Table</el-menu-item>
+            <el-menu-item index="/states">State Table</el-menu-item>
+            <el-menu-item index="/map">Map</el-menu-item>
+          </el-menu>
+
+          <el-input
+            v-model="searchQuery"
+            placeholder="Search"
+            class="search-input"
+            clearable
+          />
+        </div>
+      </el-header>
+    </el-container>
+  </div>
+</template>
+
+<script setup>
+import { ref, computed } from "vue";
+import { useRoute } from "vue-router";
+
+const route = useRoute();
+const searchQuery = ref("");
+
+const activeIndex = computed(() => route.path);
+</script>
+
+<style scoped>
+.fixed-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  background-color: #07020d;
+  color: white;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  z-index: 1000;
+  font-family: "Jost", sans-serif;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+}
+.logo-img {
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+}
+.logo-text {
+  font-size: 20px;
+  font-weight: bold;
+  color: white;
+  font-family: "Jost", sans-serif;
+}
+
+.nav-container {
+  display: flex;
+  align-items: center;
+}
+
+.nav-menu {
+  display: flex;
+  justify-content: flex-end;
+  flex-grow: 1;
+  min-width: 650px;
+}
+
+.el-menu {
+  background-color: #07020d;
+  flex-wrap: nowrap;
+}
+.el-menu-item {
+  color: white !important;
+  transition: color 0.3s ease;
+}
+.el-menu-item:hover {
+  background-color: transparent !important;
+  color: #409eff !important;
+}
+
+.search-input {
+  width: 180px;
+  margin-left: 10px;
+}
+.search-input:hover {
+  border: 1px solid #409eff;
+  border-radius: 10%;
 }
 </style>

@@ -10,7 +10,6 @@ import defaultPage from "./layouts/default.vue";
 </script>
 <style>
 body {
-  background-image: url("./assets/cloud-background.jpg");
   background-size: cover;
   background-position: center;
   background-attachment: fixed;

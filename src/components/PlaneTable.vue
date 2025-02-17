@@ -163,7 +163,7 @@ const handleCurrentChange = (newPage) => {
   margin-top: 10px;
   display: flex;
   justify-content: center;
-  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS";
+  font-family: "Jost", sans-serif;
 }
 
 .button-group {
@@ -195,7 +195,7 @@ const handleCurrentChange = (newPage) => {
 .search-item label {
   margin-top: 5px;
   margin-bottom: 5px;
-  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS";
+  font-family: "Jost", sans-serif;
   font-weight: bold;
   color: rgb(126, 125, 125);
 }
@@ -212,24 +212,23 @@ const handleCurrentChange = (newPage) => {
 .fetch-button {
   width: 150px;
   height: 40px;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Jost", sans-serif;
   margin-right: 1%;
 }
 
 .table-group {
-  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+  font-family: "Jost", sans-serif;
   border: 1px solid #3399ff;
   border-radius: 0.1cm;
 }
 .header {
-  margin-top: 80px;
+  margin-top: 30px;
   display: flex;
-  justify-content: center;
-  font-size: 100px;
-  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS";
+  justify-content: left;
+  font-size: 30px;
+  font-family: "Jost", sans-serif;
   color: #3399ff;
-  text-shadow: 2px 2px 0px black, -2px -2px 0px black, 2px -2px 0px black,
-    -2px 2px 0px black;
+  font-weight: bold;
 }
 .example-showcase .el-loading-mask {
   z-index: 9;

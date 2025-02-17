@@ -1,5 +1,6 @@
 <template>
   <PageHeader />
+  <div class="header">MAP</div>
   <div class="container">
     <div class="content"><div id="map-container"></div></div>
   </div>
@@ -71,11 +72,16 @@ const updateMarkers = () => {
   visibleFlights.forEach((flight) => {
     const el = document.createElement("div");
     el.className = "marker";
+
     const img = document.createElement("img");
     img.src = "https://www.svgrepo.com/show/326465/airplane-outline.svg";
     img.style.width = "30px";
     img.style.height = "30px";
-    img.style.transform = `rotate(${flight.true_track}deg)`;
+
+    const mapBearing = map.value.getBearing();
+    const correctedAngle = flight.true_track - mapBearing;
+
+    img.style.transform = `rotate(${correctedAngle - 90}deg)`;
 
     el.appendChild(img);
 
@@ -129,10 +135,11 @@ onMounted(() => {
 
 <style>
 #map-container {
-  margin-top: 80px;
+  margin-top: 5px;
   width: 90%;
   padding: 5%;
   height: 1000px;
+  border: 2px solid #3399ff;
 }
 .marker img {
   transition: transform 0.3s ease-out;
@@ -148,5 +155,14 @@ onMounted(() => {
 
 .content {
   flex-grow: 1;
+}
+.header {
+  margin-top: 30px;
+  display: flex;
+  justify-content: left;
+  font-size: 30px;
+  font-family: "Jost", sans-serif;
+  color: #3399ff;
+  font-weight: bold;
 }
 </style>
