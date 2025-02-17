@@ -156,7 +156,7 @@ const goBack = () => {
   <div class="common-layout">
     <el-container>
       <el-header class="fixed-header">
-        <div class="logo">
+        <div class="logo" @click="goToMain">
           <img src="/icons8-plane.png" alt="Logo" class="logo-img" />
           <span class="logo-text">SkyTrack</span>
         </div>
@@ -168,19 +168,11 @@ const goBack = () => {
             class="nav-menu"
             :default-active="activeIndex"
           >
-            <el-menu-item index="/">Ana Sayfa</el-menu-item>
             <el-menu-item index="/departures">Departure Table</el-menu-item>
             <el-menu-item index="/arrivals">Arrival Table</el-menu-item>
             <el-menu-item index="/states">State Table</el-menu-item>
             <el-menu-item index="/map">Map</el-menu-item>
           </el-menu>
-
-          <el-input
-            v-model="searchQuery"
-            placeholder="Search"
-            class="search-input"
-            clearable
-          />
         </div>
       </el-header>
     </el-container>
@@ -188,11 +180,15 @@ const goBack = () => {
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
-import { useRoute } from "vue-router";
+import { computed } from "vue";
+import { useRoute, useRouter } from "vue-router";
 
 const route = useRoute();
-const searchQuery = ref("");
+const router = useRouter();
+
+const goToMain = () => {
+  router.push("/states");
+};
 
 const activeIndex = computed(() => route.path);
 </script>
@@ -212,6 +208,8 @@ const activeIndex = computed(() => route.path);
   height: 60px;
   z-index: 1000;
   font-family: "Jost", sans-serif;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1); /* Alt çizgi eklendi */
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3); /* Hafif gölge efekti */
 }
 
 .logo {
@@ -245,7 +243,9 @@ const activeIndex = computed(() => route.path);
 .el-menu {
   background-color: #07020d;
   flex-wrap: nowrap;
+  border-bottom: none !important;
 }
+
 .el-menu-item {
   color: white !important;
   transition: color 0.3s ease;
@@ -253,14 +253,5 @@ const activeIndex = computed(() => route.path);
 .el-menu-item:hover {
   background-color: transparent !important;
   color: #409eff !important;
-}
-
-.search-input {
-  width: 180px;
-  margin-left: 10px;
-}
-.search-input:hover {
-  border: 1px solid #409eff;
-  border-radius: 10%;
 }
 </style>

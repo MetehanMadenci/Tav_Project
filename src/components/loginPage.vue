@@ -1,15 +1,10 @@
 <template>
-  <PageHeader />
   <div class="container">
     <div class="content">Login Page</div>
   </div>
-  <PageFooter />
 </template>
 
-<script setup>
-import PageHeader from "./pageHeader.vue";
-import PageFooter from "./pageFooter.vue";
-</script>
+<script setup></script>
 <style>
 .container {
   display: flex;

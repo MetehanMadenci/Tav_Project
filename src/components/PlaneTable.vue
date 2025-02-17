@@ -3,6 +3,7 @@
   <div class="container">
     <div class="content">
       <div class="header">STATE TABLE</div>
+      <div class="filter">Filter</div>
       <div class="header-button-group">
         <div class="button-group">
           <div class="search-group">
@@ -205,7 +206,7 @@ const handleCurrentChange = (newPage) => {
   height: 35px;
 }
 .header-button-group {
-  background-color: white;
+  background-color: rgb(238, 238, 238);
   border-radius: 0.1cm;
 }
 
@@ -226,6 +227,15 @@ const handleCurrentChange = (newPage) => {
   display: flex;
   justify-content: left;
   font-size: 30px;
+  font-family: "Jost", sans-serif;
+  color: #3399ff;
+  font-weight: bold;
+}
+.filter {
+  margin-top: 2px;
+  display: flex;
+  justify-content: left;
+  font-size: 20px;
   font-family: "Jost", sans-serif;
   color: #3399ff;
   font-weight: bold;

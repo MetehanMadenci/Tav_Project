@@ -30,15 +30,11 @@
 <template>
   <div>
     <el-container>
-      <el-footer style="height: 150px; background-color: #c9c7cb"
+      <el-footer style="height: 150px; background-color: #07020d"
         ><center>
           <div style="margin-top: 70px">
             <a href="https://github.com/MetehanMadenci/Tav_Project">
-              <img
-                src="https://cdn-icons-png.flaticon.com/512/25/25231.png"
-                width="40"
-                height="40"
-              />
+              <img src="../assets/github-logo.jpg" width="40" height="40" />
             </a>
           </div>
         </center>
