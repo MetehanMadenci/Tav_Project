@@ -5,18 +5,30 @@
       <h1 class="logo-text">SkyTrack</h1>
     </div>
     <div class="login-container">
-      <h1>Login</h1>
-      <input required v-model="username" placeholder="Username" class="input" />
+      <h2 style="font-size: 35px">Login</h2>
+      <h1 class="subheader">Username:</h1>
+      <el-input
+        required
+        v-model="username"
+        placeholder="Enter Username"
+        class="input"
+        :prefix-icon="User"
+      />
       <hr />
-      <input
+      <h1 class="subheader">Password:</h1>
+      <el-input
         required
         v-model="password"
         type="password"
-        placeholder="Password"
+        placeholder="Enter Password"
         class="input"
+        :prefix-icon="Lock"
       />
       <hr />
-      <button @click="handleLogin" class="login-button">Login</button>
+      <hr />
+      <button @click="handleLogin" class="login-button" style="height: 55px">
+        Login
+      </button>
     </div>
   </div>
 </template>
@@ -26,7 +38,7 @@ import { ref } from "vue";
 import { useAuthStore } from "../stores/AuthStore";
 import { useRouter } from "vue-router";
 import { ElMessage } from "element-plus";
-
+import { User, Lock } from "@element-plus/icons-vue";
 const username = ref("");
 const password = ref("");
 const authStore = useAuthStore();
@@ -45,11 +57,24 @@ const handleLogin = async () => {
   await authStore.login(username.value, password.value);
   if (authStore.isAuthenticated) {
     router.push("/map");
+  } else {
+    ElMessage({
+      message: "Username or Password is wrong!",
+      duration: 3000,
+      showClose: true,
+      customClass: "error-message",
+    });
   }
 };
 </script>
 
 <style>
+.subheader {
+  font-size: 18px;
+  text-align: left;
+  width: 100%;
+  margin-left: 10px;
+}
 .app-container {
   background-color: #07020d;
   display: flex;
@@ -89,8 +114,8 @@ const handleLogin = async () => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 220px;
-  width: 250px;
+  height: 500px;
+  width: 300px;
   font-family: "Jost", sans-serif;
   border: 1px solid #3399ff;
   border-radius: 8px;
@@ -105,7 +130,7 @@ const handleLogin = async () => {
   border: 1px solid #3399ff;
   border-radius: 4px;
   width: 200px;
-  padding: 5px;
+  height: 50px;
 }
 
 .login-button {
@@ -115,7 +140,7 @@ const handleLogin = async () => {
   font-size: 18px;
   border: none;
   border-radius: 4px;
-  width: 210px;
+  width: 300px;
   padding: 8px;
   cursor: pointer;
   transition: 0.3s;

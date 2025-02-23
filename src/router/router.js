@@ -32,6 +32,10 @@ const routes = [
     name: "Map",
     meta: { needAuth: true },
   },
+  {
+    path: "/:pathMatch(.*)*",
+    redirect: "/",
+  },
 ];
 
 const router = createRouter({

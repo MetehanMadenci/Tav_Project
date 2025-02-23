@@ -18,7 +18,20 @@
             <el-menu-item index="/arrivals">Arrival Table</el-menu-item>
             <el-menu-item index="/states">State Table</el-menu-item>
             <el-menu-item index="/map">Map</el-menu-item>
-            <el-menu-item @click="handleLogout">Logout</el-menu-item>
+            <el-menu-item
+              @mouseover="showLogout = true"
+              @mouseleave="showLogout = false"
+              ><el-icon><Avatar /></el-icon>
+              {{ authStore.user.username }}
+              <div
+                v-if="showLogout"
+                class="logout-dropdown"
+                @click="handleLogout"
+                style="height: 40px; width: 110px"
+              >
+                Logout
+              </div>
+            </el-menu-item>
           </el-menu>
         </div>
       </el-header>
@@ -27,13 +40,16 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { ref, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useAuthStore } from "../stores/AuthStore";
+import { Avatar } from "@element-plus/icons-vue";
 
 const route = useRoute();
 const router = useRouter();
 const authStore = useAuthStore();
+
+const showLogout = ref(false);
 
 const handleLogout = () => {
   authStore.logout();
@@ -102,6 +118,27 @@ const activeIndex = computed(() => route.path);
   transition: color 0.3s ease;
 }
 .el-menu-item:hover {
+  background-color: transparent !important;
+  color: #409eff !important;
+}
+
+.logout-dropdown {
+  position: absolute;
+  top: 40px;
+  left: 0;
+  background-color: #07020d;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.logout-dropdown:hover {
+  color: #409eff !important;
+}
+.el-menu-item:focus,
+.el-menu-item.is-active {
   background-color: transparent !important;
   color: #409eff !important;
 }

@@ -59,7 +59,6 @@ import axios from "axios";
 import dayjs from "dayjs";
 import PageHeader from "./pageHeader.vue";
 import PageFooter from "./pageFooter.vue";
-
 const tableData = ref([]);
 const searchAirport = ref("LTBJ");
 const loading = ref(false);
