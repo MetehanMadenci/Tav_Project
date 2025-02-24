@@ -56,6 +56,12 @@ const fetchData = async () => {
 const updateMarkers = () => {
   const bounds = map.value.getBounds();
 
+  const openPopups = new Set(
+    markers.value
+      .filter((marker) => marker.getPopup().isOpen())
+      .map((marker) => marker._flightId)
+  );
+
   markers.value.forEach((marker) => marker.remove());
   markers.value = [];
 
@@ -74,33 +80,47 @@ const updateMarkers = () => {
     el.className = "marker";
 
     const img = document.createElement("img");
-    img.src = "https://www.svgrepo.com/show/326465/airplane-outline.svg";
+    img.src = "/p-airplane-svgrepo-com.svg";
     img.style.width = "30px";
     img.style.height = "30px";
 
     const mapBearing = map.value.getBearing();
     const correctedAngle = flight.true_track - mapBearing;
-
     img.style.transform = `rotate(${correctedAngle - 90}deg)`;
 
     el.appendChild(img);
 
     const description = `
-      <div style="font-size:14px; font-family:Arial, sans-serif; padding:5px; text-align:left;">
-        <strong>Callsign:</strong> ${flight.callsign} <br>
-        <strong>Country:</strong> ${flight.origin_country} <br>
-        <strong>Speed:</strong> ${flight.velocity} km/h <br>
-        <strong>Altitude:</strong> ${flight.altitude} m <br>
-        <strong>Track:</strong> ${flight.true_track}° <br>
+      <div class="description">
+        <div class="popup-header">
+      <img class="plane-icon" src="/pop-airplane-svgrepo-com.svg" alt="Plane">
+      <h3>${flight.callsign}</h3>
+    </div>
+        <div class="prop"><strong>Country:</strong> ${flight.origin_country} </div><br>
+        <div class="prop"><strong>Speed:</strong> ${flight.velocity} km/h </div><br>
+        <div class="prop"><strong>Altitude:</strong> ${flight.altitude} m </div><br>
+        <div class="prop"><strong>Track:</strong> ${flight.true_track}° </div><br>
       </div>
     `;
 
-    const popup = new mapboxgl.Popup({ offset: 15 }).setHTML(description);
+    const popup = new mapboxgl.Popup({ offset: 15 })
+      .setHTML(description)
+      .on("open", () => {
+        img.src = "/y-airplane-svgrepo-com.svg";
+      })
+      .on("close", () => {
+        img.src = "/p-airplane-svgrepo-com.svg";
+      });
 
     const marker = new mapboxgl.Marker(el)
       .setLngLat([flight.longitude, flight.latitude])
       .setPopup(popup)
       .addTo(map.value);
+    if (openPopups.has(flight.icao24)) {
+      popup.addTo(map.value);
+    }
+
+    marker._flightId = flight.icao24;
 
     markers.value.push(marker);
   });
@@ -134,6 +154,47 @@ onMounted(() => {
 </script>
 
 <style>
+.popup-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  color: #409eff;
+}
+.mapboxgl-popup {
+  transform: none !important;
+  top: 65%;
+  left: 10px;
+  width: 300px;
+  max-height: 500px;
+}
+.description {
+  font-size: 14px;
+  font-family: "Jost", sans-serif;
+  padding: 15px;
+  padding-right: 20px;
+  text-align: left;
+  border: 1px solid rgb(158, 155, 155);
+  background-color: rgb(238, 238, 238);
+  border-radius: 2%;
+  width: 80%;
+  margin-top: 2%;
+}
+strong {
+  color: #409eff;
+}
+
+.mapboxgl-popup-anchor-top .mapboxgl-popup-tip,
+.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip,
+.mapboxgl-popup-anchor-center .mapboxgl-popup-tip,
+.mapboxgl-popup-anchor-left .mapboxgl-popup-tip,
+.mapboxgl-popup-anchor-right .mapboxgl-popup-tip,
+.mapboxgl-popup-anchor-bottom-right .mapboxgl-popup-tip,
+.mapboxgl-popup-anchor-bottom-left .mapboxgl-popup-tip,
+.mapboxgl-popup-anchor-top-right .mapboxgl-popup-tip,
+.mapboxgl-popup-anchor-top-left .mapboxgl-popup-tip {
+  display: none !important;
+}
 #map-container {
   margin-top: 5px;
   width: 90%;
@@ -143,9 +204,6 @@ onMounted(() => {
 }
 .marker img {
   transition: transform 0.3s ease-out;
-}
-.mapboxgl-popup {
-  max-width: 250px;
 }
 .container {
   display: flex;
