@@ -93,7 +93,7 @@ const updateMarkers = () => {
     const description = `
       <div class="description">
         <div class="popup-header">
-      <img class="plane-icon" src="/pop-airplane-svgrepo-com.svg" alt="Plane">
+      <img class="plane-icon" src="/pop-airplane-flight-svgrepo-com.svg" alt="Plane">
       <h3>${flight.callsign}</h3>
     </div>
         <div class="prop"><strong>Country:</strong> ${flight.origin_country} </div><br>
