@@ -129,7 +129,7 @@ const handleLogin = async () => {
   font-family: "Jost", sans-serif;
   border: 1px solid #3399ff;
   border-radius: 4px;
-  width: 200px;
+  width: 290px;
   height: 50px;
 }
 
