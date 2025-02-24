@@ -10,7 +10,7 @@ const routes = [
   },
   {
     path: "/states",
-    component: () => import("../components/planeTable.vue"),
+    component: () => import("../components/PlaneTable.vue"),
     name: "States",
     meta: { needAuth: true },
   },
