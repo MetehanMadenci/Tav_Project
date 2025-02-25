@@ -19,7 +19,7 @@
   width: 100%;
   height: 5vh;
   text-align: center;
-  position: absolute;
+  position: fixed;
   left: 0;
   font-family: "Jost", sans-serif;
   color: white;

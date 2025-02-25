@@ -74,7 +74,7 @@ const activeIndex = computed(() => route.path);
   top: 0;
   left: 0;
   width: 100%;
-  height: 4.5vh;
+  height: 60px;
   font-family: "Jost", sans-serif;
   z-index: 1;
 }
