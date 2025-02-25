@@ -176,12 +176,13 @@ onUnmounted(() => {
   margin-bottom: 10px;
   color: #409eff;
 }
+
 .mapboxgl-popup {
+  position: absolute !important;
+  top: 55% !important;
+  left: 10px !important;
   transform: none !important;
-  top: 65%;
-  left: 10px;
   width: 300px;
-  max-height: 500px;
 }
 .description {
   font-size: 14px;
