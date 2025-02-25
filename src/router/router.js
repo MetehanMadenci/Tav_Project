@@ -1,6 +1,7 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 import { useAuthStore } from "../stores/AuthStore";
 import { ElMessage } from "element-plus";
+import DefaultLayout from "../layouts/default.vue";
 
 const routes = [
   {
@@ -9,28 +10,31 @@ const routes = [
     name: "Login",
   },
   {
-    path: "/states",
-    component: () => import("../components/PlaneTable.vue"),
-    name: "States",
+    path: "/",
+    component: DefaultLayout,
     meta: { needAuth: true },
-  },
-  {
-    path: "/arrivals",
-    component: () => import("../components/arrivalTable.vue"),
-    name: "Arrivals",
-    meta: { needAuth: true },
-  },
-  {
-    path: "/departures",
-    component: () => import("../components/departureTable.vue"),
-    name: "Departures",
-    meta: { needAuth: true },
-  },
-  {
-    path: "/map",
-    component: () => import("../components/mapPage.vue"),
-    name: "Map",
-    meta: { needAuth: true },
+    children: [
+      {
+        path: "states",
+        component: () => import("../components/PlaneTable.vue"),
+        name: "States",
+      },
+      {
+        path: "arrivals",
+        component: () => import("../components/arrivalTable.vue"),
+        name: "Arrivals",
+      },
+      {
+        path: "departures",
+        component: () => import("../components/departureTable.vue"),
+        name: "Departures",
+      },
+      {
+        path: "map",
+        component: () => import("../components/mapPage.vue"),
+        name: "Map",
+      },
+    ],
   },
   {
     path: "/:pathMatch(.*)*",

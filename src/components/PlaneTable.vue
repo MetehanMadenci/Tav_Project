@@ -1,5 +1,4 @@
 <template>
-  <PageHeader />
   <div class="container">
     <div class="content">
       <div class="header">STATE TABLE</div>
@@ -43,6 +42,7 @@
           </el-button>
         </div>
       </div>
+
       <el-table
         class="table-group"
         v-loading="loading"
@@ -50,6 +50,7 @@
         :data="paginatedData"
         stripe
         style="width: 100%"
+        max-height="60vh"
       >
         <el-table-column prop="icao24" label="ICAO24" />
         <el-table-column prop="callsign" label="Callsign" />
@@ -72,15 +73,16 @@
       </div>
     </div>
   </div>
-  <PageFooter />
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, onUnmounted } from "vue";
 import axios from "axios";
-import PageHeader from "./pageHeader.vue";
-import PageFooter from "./pageFooter.vue";
+import { ElMessage } from "element-plus";
+import { useAuthStore } from "../stores/AuthStore";
 
+const authStore = useAuthStore();
+const isPageActive = ref(false);
 const tableData = ref([]);
 const currentPage = ref(1);
 const loading = ref();
@@ -94,6 +96,7 @@ const USERNAME = import.meta.env.VITE_USERNAME;
 const PASSWORD = import.meta.env.VITE_PASSWORD;
 
 const fetchData = async () => {
+  if (!isPageActive.value || !authStore.isAuthenticated) return;
   loading.value = true;
   try {
     const response = await axios.get(
@@ -103,6 +106,7 @@ const fetchData = async () => {
           username: USERNAME,
           password: PASSWORD,
         },
+        timeout: 5000,
       }
     );
     if (response.data && response.data.states) {
@@ -115,14 +119,24 @@ const fetchData = async () => {
       }));
     }
   } catch (error) {
-    console.error("Error fetching flight data:", error);
+    ElMessage({
+      message: "Error with Fetching Data!",
+      duration: 3000,
+      showClose: true,
+      customClass: "data-error-message",
+    });
   } finally {
     loading.value = false;
   }
 };
+
 onMounted(() => {
+  isPageActive.value = true;
   fetchData();
   setInterval(fetchData, 60000);
+});
+onUnmounted(() => {
+  isPageActive.value = false;
 });
 
 const filteredData = computed(() => {
@@ -246,7 +260,7 @@ const handleCurrentChange = (newPage) => {
 .container {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  height: 100%;
 }
 
 .content {

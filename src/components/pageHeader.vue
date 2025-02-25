@@ -68,15 +68,15 @@ const activeIndex = computed(() => route.path);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 20px;
   background-color: #07020d;
   color: white;
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  height: 60px;
+  height: 4.5vh;
   font-family: "Jost", sans-serif;
+  z-index: 1;
 }
 
 .logo {
@@ -141,5 +141,8 @@ const activeIndex = computed(() => route.path);
 .el-menu-item.is-active {
   background-color: transparent !important;
   color: #409eff !important;
+}
+.common-layout {
+  height: 0vh;
 }
 </style>

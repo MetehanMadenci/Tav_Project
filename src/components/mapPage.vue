@@ -1,19 +1,18 @@
 <template>
-  <PageHeader />
   <div class="header">MAP</div>
+  <br />
   <div class="container">
     <div class="content"><div id="map-container"></div></div>
   </div>
-  <PageFooter />
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, onUnmounted } from "vue";
 import mapboxgl from "mapbox-gl";
 import axios from "axios";
 import "mapbox-gl/dist/mapbox-gl.css";
-import PageHeader from "./pageHeader.vue";
-import PageFooter from "./pageFooter.vue";
+import { ElMessage } from "element-plus";
+import { useAuthStore } from "../stores/AuthStore";
 
 const USERNAME = import.meta.env.VITE_USERNAME;
 const PASSWORD = import.meta.env.VITE_PASSWORD;
@@ -21,16 +20,17 @@ const MAPTOKEN = import.meta.env.VITE_MAPBOX_KEY;
 const tableData = ref([]);
 const map = ref(null);
 const markers = ref([]);
+const authStore = useAuthStore();
+const isPageActive = ref(false);
 
 const fetchData = async () => {
+  if (!isPageActive.value || !authStore.isAuthenticated) return;
   try {
     const response = await axios.get(
       "https://opensky-network.org/api/states/all",
       {
-        auth: {
-          username: USERNAME,
-          password: PASSWORD,
-        },
+        auth: { username: USERNAME, password: PASSWORD },
+        timeout: 5000,
       }
     );
 
@@ -49,11 +49,20 @@ const fetchData = async () => {
       updateMarkers();
     }
   } catch (error) {
-    console.error("Error fetching flight data:", error);
+    if (isPageActive.value) {
+      ElMessage({
+        message: "Error with Fetching Data!",
+        duration: 3000,
+        showClose: true,
+        customClass: "data-error-message",
+      });
+    }
   }
 };
 
 const updateMarkers = () => {
+  if (!map.value) return;
+
   const bounds = map.value.getBounds();
 
   const openPopups = new Set(
@@ -93,9 +102,9 @@ const updateMarkers = () => {
     const description = `
       <div class="description">
         <div class="popup-header">
-      <img class="plane-icon" src="/pop-airplane-flight-svgrepo-com.svg" alt="Plane">
-      <h3>${flight.callsign}</h3>
-    </div>
+          <img class="plane-icon" src="/pop-airplane-flight-svgrepo-com.svg" alt="Plane">
+          <h3>${flight.callsign}</h3>
+        </div>
         <div class="prop"><strong>Country:</strong> ${flight.origin_country} </div><br>
         <div class="prop"><strong>Speed:</strong> ${flight.velocity} km/h </div><br>
         <div class="prop"><strong>Altitude:</strong> ${flight.altitude} m </div><br>
@@ -127,6 +136,8 @@ const updateMarkers = () => {
 };
 
 onMounted(() => {
+  isPageActive.value = true;
+
   mapboxgl.accessToken = MAPTOKEN;
 
   map.value = new mapboxgl.Map({
@@ -148,8 +159,12 @@ onMounted(() => {
   map.value.addControl(new mapboxgl.ScaleControl({ unit: "metric" }));
 
   fetchData();
-  setInterval(fetchData, 3000);
+
   map.value.on("moveend", updateMarkers);
+});
+
+onUnmounted(() => {
+  isPageActive.value = false;
 });
 </script>
 
@@ -196,10 +211,9 @@ strong {
   display: none !important;
 }
 #map-container {
-  margin-top: 5px;
-  width: 90%;
-  padding: 5%;
-  height: 1000px;
+  width: 100%;
+  height: 75vh !important;
+  max-height: 75vh;
   border: 2px solid #3399ff;
 }
 .marker img {
@@ -208,12 +222,9 @@ strong {
 .container {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  max-height: 100vh;
 }
 
-.content {
-  flex-grow: 1;
-}
 .header {
   margin-top: 30px;
   display: flex;

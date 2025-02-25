@@ -17,11 +17,12 @@
 <style>
 .el-footer {
   width: 100%;
+  height: 5vh;
   text-align: center;
-  margin-top: 10px;
   position: absolute;
   left: 0;
   font-family: "Jost", sans-serif;
   color: white;
+  bottom: 0;
 }
 </style>

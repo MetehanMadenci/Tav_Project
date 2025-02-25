@@ -1,5 +1,4 @@
 <template>
-  <PageHeader />
   <div class="container">
     <div class="content">
       <div class="header">DEPARTURE TABLE</div>
@@ -29,6 +28,7 @@
         v-loading="loading"
         :data="paginatedData"
         stripe
+        max-height="60vh"
       >
         <el-table-column prop="icao24" label="ICAO24" />
         <el-table-column prop="callsign" label="Callsign" />
@@ -50,16 +50,16 @@
       </div>
     </div>
   </div>
-  <PageFooter />
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, onUnmounted } from "vue";
 import axios from "axios";
 import dayjs from "dayjs";
-import PageHeader from "./pageHeader.vue";
-import PageFooter from "./pageFooter.vue";
+import { useAuthStore } from "../stores/AuthStore";
 
+const isPageActive = ref(false);
+const authStore = useAuthStore();
 const tableData = ref([]);
 const searchAirport = ref("LTFM");
 const loading = ref(false);
@@ -71,6 +71,7 @@ const USERNAME = import.meta.env.VITE_USERNAME;
 const PASSWORD = import.meta.env.VITE_PASSWORD;
 
 const fetchData = async () => {
+  if (!isPageActive.value || !authStore.isAuthenticated) return;
   if (!searchAirport.value.trim()) return;
 
   loading.value = true;
@@ -100,12 +101,23 @@ const fetchData = async () => {
       lastSeen: dayjs.unix(flight.lastSeen).format("HH:mm:ss"),
     }));
   } catch (error) {
-    console.error("Error fetching departure flights:", error);
+    ElMessage({
+      message: "Error with Fetching Data!",
+      duration: 3000,
+      showClose: true,
+      customClass: "data-error-message",
+    });
   } finally {
     loading.value = false;
   }
 };
-onMounted(fetchData);
+onMounted(() => {
+  isPageActive.value = true;
+  fetchData();
+});
+onUnmounted(() => {
+  isPageActive.value = false;
+});
 const paginatedData = computed(() => {
   const start = (currentPage.value - 1) * pageSize.value;
   return tableData.value.slice(start, start + pageSize.value);
@@ -204,12 +216,7 @@ const handleCurrentChange = (newPage) => {
 .example-showcase .el-loading-mask {
   z-index: 9;
 }
-.container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-.content {
-  flex-grow: 1;
+body {
+  height: 100vh;
 }
 </style>
