@@ -169,6 +169,7 @@ const handleCurrentChange = (newPage) => {
 }
 
 .search-item label {
+  width: 100px;
   margin-top: 5px;
   margin-bottom: 5px;
   font-family: "Jost", sans-serif;
