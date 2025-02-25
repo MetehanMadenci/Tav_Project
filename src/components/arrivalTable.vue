@@ -196,6 +196,7 @@ const handleCurrentChange = (newPage) => {
   font-family: "Jost", sans-serif;
   border: 1px solid #3399ff;
   border-radius: 0.1cm;
+  height: calc(100vh - 500px);
 }
 .header {
   margin-top: 30px;

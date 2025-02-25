@@ -194,6 +194,7 @@ const handleCurrentChange = (newPage) => {
   font-family: "Jost", sans-serif;
   border: 1px solid #3399ff;
   border-radius: 0.1cm;
+  height: calc(100vh - 500px);
 }
 .header {
   margin-top: 30px;
@@ -215,8 +216,5 @@ const handleCurrentChange = (newPage) => {
 }
 .example-showcase .el-loading-mask {
   z-index: 9;
-}
-body {
-  height: 100vh;
 }
 </style>
