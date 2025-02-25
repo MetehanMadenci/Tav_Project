@@ -9,11 +9,11 @@ export default {
     return null;
   },
   logout() {
-    ElMessage({
+    /* ElMessage({
       message: "User logged out!",
       duration: 3000,
       showClose: true,
       customClass: "error-message",
-    });
+    }); */
   },
 };
