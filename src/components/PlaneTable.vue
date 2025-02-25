@@ -260,10 +260,10 @@ const handleCurrentChange = (newPage) => {
 .container {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: calc(100vh - 300px);
 }
 
-.content {
-  flex-grow: 1;
-}
+/* .content {
+   flex-grow: 1; 
+} */
 </style>

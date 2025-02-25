@@ -212,8 +212,7 @@ strong {
 }
 #map-container {
   width: 100%;
-  height: 75vh !important;
-  max-height: 75vh;
+  height: calc(100vh - 300px);
   border: 2px solid #3399ff;
 }
 .marker img {
@@ -222,9 +221,8 @@ strong {
 .container {
   display: flex;
   flex-direction: column;
-  max-height: 100vh;
+  flex-grow: 1;
 }
-
 .header {
   margin-top: 30px;
   display: flex;
