@@ -61,7 +61,7 @@ import { useAuthStore } from "../stores/AuthStore";
 const isPageActive = ref(false);
 const authStore = useAuthStore();
 const tableData = ref([]);
-const searchAirport = ref("LTBJ");
+const searchAirport = ref("LTFM");
 const loading = ref(false);
 
 const currentPage = ref(1);

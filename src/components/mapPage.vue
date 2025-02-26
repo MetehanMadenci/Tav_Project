@@ -30,7 +30,6 @@ const fetchData = async () => {
       "https://opensky-network.org/api/states/all",
       {
         auth: { username: USERNAME, password: PASSWORD },
-        timeout: 5000,
       }
     );
 
@@ -134,7 +133,7 @@ const updateMarkers = () => {
     markers.value.push(marker);
   });
 };
-
+let fetchInterval = null;
 onMounted(() => {
   isPageActive.value = true;
 
@@ -159,7 +158,7 @@ onMounted(() => {
   map.value.addControl(new mapboxgl.ScaleControl({ unit: "metric" }));
 
   fetchData();
-
+  fetchInterval = setInterval(fetchData, 3000);
   map.value.on("moveend", updateMarkers);
 });
 
